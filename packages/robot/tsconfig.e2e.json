@@ -3,9 +3,12 @@
   "compilerOptions": {
     "allowJs": true,
     "outDir": "out-tsc/playwright",
-    "sourceMap": false
+    "sourceMap": false,
+    "paths": {
+      "@pages/*": ["./src/pages/*"]
+    }
   },
-  "include": ["e2e/**/*.ts", "e2e/**/*.js", "playwright.config.ts"],
+  "include": ["src/**/*.ts", "e2e/**/*.ts", "playwright.config.ts"],
   "exclude": [
     "out-tsc",
     "test-output",

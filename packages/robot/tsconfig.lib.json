@@ -6,7 +6,10 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@pages/*": ["./src/pages/*"]
+    }
   },
   "include": ["src/**/*.ts"],
   "references": []

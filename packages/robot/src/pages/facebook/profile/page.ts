@@ -1,0 +1,98 @@
+import { Base } from "../base";
+
+type SectionOptions = "banner" | "navigation" | "content";
+type ContentOptions = "aside" | "main";
+type PostOptions = "owner" | "content" | "interaction";
+type MainOptions = "filter" | "posts";
+
+export class FacebookProfilePage extends Base {
+  private get root() {
+    return this.page.locator("xpath=//div[@role='main']");
+  }
+
+  protected section(value: SectionOptions) {
+    const options = {
+      banner: 0,
+      // undefined: 1,
+      navigation: 2,
+      content: 3,
+    }[value];
+
+    this.current = this.root.locator(`xpath=./div`).nth(options);
+
+    return {
+      content: this.content.bind(this),
+      remove: this.remove.bind(this),
+    };
+  }
+
+  private content(value: ContentOptions) {
+    const option = {
+      aside: 0,
+      main: 1,
+    }[value];
+
+    this.current = this.current
+      .locator("xpath=./div")
+      .last()
+      .locator("xpath=./div/div")
+      .nth(option);
+
+    return {
+      main: this.main.bind(this),
+      remove: this.remove.bind(this),
+    };
+  }
+
+  private main(value: MainOptions) {
+    const option = {
+      filter: 0,
+      posts: 1,
+    }[value];
+
+    this.current = this.current.locator("xpath=./div").nth(option);
+
+    return {
+      posts: this.posts.bind(this),
+    };
+  }
+
+  /**
+   * Get the posts or post
+   */
+  private posts(index?: number) {
+    this.current = this.current.locator(
+      "xpath=./div[not(preceding-sibling::div[@class='']) and count(node()) > 0]" // cari div sodara yang memiliki class kosng dan yang memiliki anak
+    );
+
+    if (typeof index === "number") {
+      this.current = this.current.nth(index);
+    }
+  }
+
+  /**
+   * The post
+   */
+  post(value: PostOptions) {
+    const option = {
+      // undefined: 0,
+      owner: 1,
+      content: 2,
+      interaction: 3,
+    }[value];
+
+    const container = this.current.locator(
+      "xpath=.//div[div[1][not(node()) or normalize-space()='']]" // cara anak ke 2
+    );
+
+    const wrapper = container.locator(
+      "xpath=./div/div/div[count(div)=4]" // cari anak ke 3 yang memiliki 4 anak
+    );
+
+    const list = wrapper.locator("xpath=./div");
+
+    this.current = list.nth(option);
+
+    return this.current;
+  }
+}

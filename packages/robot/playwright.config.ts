@@ -1,5 +1,5 @@
-import { defineConfig, devices } from '@playwright/test';
-import { nxE2EPreset } from '@nx/playwright/preset';
+import { defineConfig, devices } from "@playwright/test";
+import { nxE2EPreset } from "@nx/playwright/preset";
 
 /**
  * Read environment variables from file.
@@ -11,16 +11,35 @@ import { nxE2EPreset } from '@nx/playwright/preset';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  ...nxE2EPreset(__filename, { testDir: './e2e' }),
+  ...nxE2EPreset(__filename, { testDir: "./e2e" }),
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    // headless: false,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    video: "retain-on-failure",
+    trace: "on-first-retry",
+
+    permissions: [],
+
+    /** INFO:
+     * sepertinya ini yang menyebabkan error ketika mode headless
+     */
+    // viewport: { width: 1920, height: 1080 },
+
+    launchOptions: {
+      args: [
+        // "--disable-notifications",
+        // "--disable-blink-features=AutomationControlled",
+        /** Mematikan hardware acceleration dan codec video */
+        // "--disable-software-rasterizer",
+        // "--mute-audio",
+      ],
+    },
   },
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
 
     // Not used first
