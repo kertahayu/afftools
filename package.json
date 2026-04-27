@@ -2,7 +2,12 @@
   "name": "@org/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "robot:test": "nx watch --projects=robot -- playwright test --only-changed --headed",
+    "robot": "playwright test",
+    "robot:watch": "PWTEST_WATCH=1 playwright test",
+    "robot:new": "playwright test --only-changed=main --headed"
+  },
   "private": true,
   "devDependencies": {
     "@eslint/js": "^9.8.0",

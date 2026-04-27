@@ -23,7 +23,7 @@ export class FacebookProfilePage extends Base {
     return {
       content: this.content.bind(this),
       remove: this.remove.bind(this),
-    };
+    } as const;
   }
 
   private content(value: ContentOptions) {
@@ -41,7 +41,7 @@ export class FacebookProfilePage extends Base {
     return {
       main: this.main.bind(this),
       remove: this.remove.bind(this),
-    };
+    } as const;
   }
 
   private main(value: MainOptions) {
@@ -52,9 +52,9 @@ export class FacebookProfilePage extends Base {
 
     this.current = this.current.locator("xpath=./div").nth(option);
 
-    return {
+    return Object.assign(this.current, {
       posts: this.posts.bind(this),
-    };
+    });
   }
 
   /**

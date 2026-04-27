@@ -1,0 +1,8 @@
+{
+  "sorts": {
+    "all": "All",
+    "old": "Old",
+    "relevant": "Relevant",
+    "new": "New"
+  }
+}
