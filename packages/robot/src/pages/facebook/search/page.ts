@@ -56,38 +56,31 @@ export class FacebookSearchPage extends Base {
     }
   }
 
-  protected filter(value: FilterOptions) {
-    const option = {
-      all: 0,
-      people: 1,
-      reels: 2,
-      marketplace: 3,
-      page: 4,
-      group: 5,
-      // undefined: 6
-    }[value];
+  protected filter(value?: FilterOptions) {
+    // all: 0, people: 1, reels: 2, marketplace: 3, page: 4, group: 5, undefined: 6
+    const fltr = this.sidebar().locator("xpath=./div");
 
-    this.current = this.sidebar().locator("xpath=./div").nth(option);
+    /**
+     * method filter all
+     */
+    const all = () => {
+      // new: 0, viewed: 1, date: 2, from: 3, location: 4,
+      this.current = fltr.nth(0);
+      this.current = this.current.locator("xpath=./div[2]/div").nth(0);
+
+      const newest = () => {
+        this.current = this.current.locator("xpath=./div/div[2]/div");
+        return this.current;
+      };
+
+      return {
+        newest,
+      };
+    };
 
     return {
-      all: this.filterAll.bind(this),
+      all,
     };
-  }
-
-  private filterAll(value: FilterAllOptions) {
-    const option = {
-      new: 0,
-      viewed: 1,
-      date: 2,
-      from: 3,
-      location: 4,
-    }[value];
-
-    this.current = this.current.locator("xpath=./div[2]/div").nth(option);
-
-    this.current = this.current.locator("xpath=./div/div[2]/div");
-
-    return this.current;
   }
 
   protected post(value: PostOptions) {

@@ -8,8 +8,13 @@ export class FacebookSearch extends FacebookSearchPage {
     const postList = new Set<string>();
 
     while (postList.size < loop) {
+      await this.current.waitFor({ state: "attached" }); // before next wait first
+
       this.content().posts(postIndex);
       // console.log(await this.current.getAttribute("role"));
+
+      // for checker whether content
+      console.log(await this.current.allTextContents());
 
       await this.current.scrollIntoViewIfNeeded(); // Effective for lazy load
 
@@ -30,7 +35,7 @@ export class FacebookSearch extends FacebookSearchPage {
     return postList;
   }
 
-  async setFilter() {
-    await this.filter("all").all("new").click();
+  async setFilterAllNew() {
+    await this.filter().all().newest().click();
   }
 }

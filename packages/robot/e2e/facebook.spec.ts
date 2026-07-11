@@ -5,6 +5,12 @@ import { FacebookPhoto } from "@pages/facebook/photo";
 import { FacebookProfile } from "@pages/facebook/profile";
 import { FacebookSearch } from "@pages/facebook/search";
 import { test } from "@playwright/test";
+import numbro from "numbro";
+import { parseNumber } from "../libs";
+
+/*
+ * sebelum menjalankan tugas harus di cek dulu apakah ada user login
+ */
 
 /**
  * Good Posts
@@ -12,7 +18,10 @@ import { test } from "@playwright/test";
  */
 
 const cookie =
+  // DELE
   "datr=EihtaS83hOAGK-Da7SnzvT5I;sb=EihtaX4G-UnrTE06JFtXges2;ps_l=1;ps_n=1;c_user=100000333888303;wd=1366x615;presence=C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1770809101728%2C%22v%22%3A1%7D;fr=1YMcs2PIDyYGD43Wm.AWfBJRfNVBJS9uz63vyVr6ZokzosdcBtDOQfAtkm5ikSooJfs2o.BpjGcN..AAA.0.0.BpjGcN.AWeNCgQaDG8aHCE4SVhwsCvTpvY;xs=9%3A1JEEe1NqBcwpeQ%3A2%3A1768761522%3A-1%3A-1%3A%3AAcyTmVoTfwv9Nx1vjpNpfjTYFbim9Po7RHoF1S_46uw";
+// Biong
+// "datr=Ew37aXyt_n4JXaw2CV-5GwUr;sb=Ew37acTJzeffUuQdcnmYrZfo;c_user=61587388731734;fr=15u3Zhrt10MLr6b0u.AWdXs_tc-d4i2nCQ1MJYIQGYuTiZrt13h6IYNw4YeeebMpC-rN0.Bp-w2-..AAA.0.0.Bp-w2-.AWdwfIHgwBJnTcwT85icamdv9bQ;xs=15%3ACAVGzUAQQ6Whjg%3A2%3A1778060728%3A-1%3A-1%3A%3AAcwh6cmirfKB3j-ZmtLgkqxa7ybpvMVXYwc4f3Gbrw;presence=C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1778060740726%2C%22v%22%3A1%7D;wd=1366x649";
 
 const isValid = (u: string) => {
   try {
@@ -23,9 +32,6 @@ const isValid = (u: string) => {
   }
 };
 
-/**
- * It's Oke
- */
 test.describe("Facebook", () => {
   /**
    * Find posts via search
@@ -43,26 +49,28 @@ test.describe("Facebook", () => {
    */
   test("Find posts from search", async ({ page }) => {
     const facebook = new FacebookSearch(page, cookie);
-    const quantity = 1;
+    const quantity = 10;
 
     /*
-     * BUG: Tidak bisa menggunakan searchparams langsung
-     * FIX: Harus menggunakan via UI
+     * BUG: cant used searchparams directly
+     * FIX: must be via UI
      */
     await test.step("Open search page", async () => {
       const params = new URLSearchParams({
         q: "israel",
-        filters:
-          "eyJyZWNlbnRfcG9zdHM6MCI6IntcIm5hbWVcIjpcInJlY2VudF9wb3N0c1wiLFwiYXJnc1wiOlwiXCJ9In0%3D",
       });
       await facebook.open("search", params);
     });
 
     await test.step("Filter set", async () => {
-      await facebook.setFilter();
+      await facebook.setFilterAllNew();
     });
 
     const links = await test.step("Ekstraksi link posts", async () => {
+      /*
+       * FIX: harus check dulu apakah ada postingan hanya text karena saya akan mengambil link postnya
+       * saat inin ketika lebih dari 1 post dan mungkin ada selain post foto (hanya text membuatnya error)
+       */
       return Array.from(await facebook.getPostList(quantity, ["photo"]));
     });
 
@@ -81,7 +89,7 @@ test.describe("Facebook", () => {
 
   test.skip("Posts crawl get post trending", async ({ page }) => {
     const facebook = new FacebookProfile(page, cookie);
-    const quantity = 5;
+    const quantity = 2;
 
     await test.step("Buka halaman dengan cookie (login)", async () => {
       await facebook.open("john.sperling.39");
@@ -125,6 +133,21 @@ test.describe("Facebook", () => {
    * Lebih baik hanya dapatkan postingan dengan komentar terbanyak
    * dan deteksi apakah banyak komentar baru (POST TRENDING)
    */
+  test.skip("Check the post photo what is a trending", async ({ page }) => {
+    const facebook = new FacebookPhoto(page, cookie);
+
+    // await test.step("Goto photo post", async () => {
+    //   await facebook.open(
+    //     "https://www.facebook.com/photo/?fbid=1425702892937394&set=a.653758993465125&__cft__[0]=AZaQNfz4L1oNoKylcEZvcd22eVw3Zg-97QPIk1UusRQq6mmRq1G1I9a3MND9uypRDuUlih34DPANdNspPrSkWYy6Co8Y4zhyIg6M92EvEM6LxPPlEUuDXgR7-YUrmeE19lbCqWHVAXP5Hl9Ufez59nPdrN9q8SkzIavXoKPEftdyQhPxqq09rG3Btt-u67WqIoY&__tn__=EH-R"
+    //   );
+    // });
+
+    parseNumber("1,2 rb");
+
+    // await test.step("Sort to newest", async () => {
+    //   await facebook.setSort("new");
+    // });
+  });
 
   test.skip("Photo page commenting", async ({ page }) => {
     const facebook = new FacebookPhoto(page, cookie);

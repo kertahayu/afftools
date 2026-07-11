@@ -1,4 +1,10 @@
 {
+  "number": {
+    "thousand": "rb",
+    "million": "jt",
+    "billion": "m",
+    "trillion": "t"
+  },
   "sorts": {
     "all": "Semua komentar",
     "old": "Terlama",

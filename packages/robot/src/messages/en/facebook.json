@@ -1,4 +1,10 @@
 {
+  "number": {
+    "thousand": "k",
+    "million": "m",
+    "billion": "b",
+    "trillion": "t"
+  },
   "sorts": {
     "all": "All",
     "old": "Old",
