@@ -1,4 +1,3 @@
-import { canInstallNxConsoleForEditor } from "nx/src/native";
 import { Base } from "../base";
 
 type FilterOptions =
@@ -40,8 +39,13 @@ export class FacebookSearchPage extends Base {
     return this.region.locator("xpath=.//div[@role='list']");
   }
 
+  protected contents() {
+    return this.main.locator("xpath=.//div[@role='feed']");
+  }
+
+  // INFO: Area konten (layout)
   protected content() {
-    this.current = this.main.locator("xpath=.//div[@role='feed']");
+    this.current = this.contents();
 
     return {
       posts: this.posts.bind(this),

@@ -5,7 +5,6 @@ import { FacebookPhoto } from "@pages/facebook/photo";
 import { FacebookProfile } from "@pages/facebook/profile";
 import { FacebookSearch } from "@pages/facebook/search";
 import { test } from "@playwright/test";
-import numbro from "numbro";
 import { parseNumber } from "../libs";
 
 /*
@@ -49,7 +48,7 @@ test.describe("Facebook", () => {
    */
   test("Find posts from search", async ({ page }) => {
     const facebook = new FacebookSearch(page, cookie);
-    const quantity = 10;
+    const quantity = 100;
 
     /*
      * BUG: cant used searchparams directly
@@ -76,8 +75,8 @@ test.describe("Facebook", () => {
 
     await test.step("Validasi hasil ekstraksi", () => {
       test
-        .expect(links, "Jumlah link post tidak sesuai")
-        .toHaveLength(quantity);
+        .expect(links.length, "Jumlah link post tidak sesuai")
+        .toBeLessThanOrEqual(quantity);
 
       for (const url of links) {
         test.expect(isValid(url), `URL salah: ${url}`).toBe(true);

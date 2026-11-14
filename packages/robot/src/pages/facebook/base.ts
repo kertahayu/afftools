@@ -1,6 +1,6 @@
-import { Cookie, Locator, Page } from "@playwright/test";
 import enFacebook from "@messages/en/facebook.json";
 import idFacebook from "@messages/id/facebook.json";
+import { Cookie, Locator, Page } from "@playwright/test";
 
 type ObjectCookie = Required<Pick<Partial<Cookie>, "name" | "value">>;
 type CookieParams = ObjectCookie[] | string;
@@ -30,7 +30,7 @@ export abstract class Base {
 
   public async open(path: string, params?: URLSearchParams) {
     await this.authenticated();
-    // await this.disabledMedia();
+    // await this.media();
     const url = new URL(path ?? "", this.url);
     if (params) {
       url.search = params.toString();
