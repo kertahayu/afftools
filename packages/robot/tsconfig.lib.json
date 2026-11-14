@@ -7,7 +7,7 @@
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
     "types": ["node"],
-    "lib": ["DOM"],
+    "lib": ["es2022", "DOM"],
     "paths": {
       "@pages/*": ["./src/pages/*"],
       "@messages/*": ["./src/messages/*"]

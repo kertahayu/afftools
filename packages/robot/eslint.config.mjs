@@ -1,28 +1,28 @@
-import playwright from 'eslint-plugin-playwright';
-import baseConfig from '../../eslint.config.mjs';
+import playwright from "eslint-plugin-playwright";
+import baseConfig from "../../eslint.config.mjs";
 
 export default [
-  playwright.configs['flat/recommended'],
+  playwright.configs["flat/recommended"],
   ...baseConfig,
   {
-    files: ['**/*.json'],
+    files: ["**/*.json"],
     rules: {
-      '@nx/dependency-checks': [
-        'error',
+      "@nx/dependency-checks": [
+        "error",
         {
-          ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}'],
+          ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],
     },
     languageOptions: {
-      parser: await import('jsonc-eslint-parser'),
+      parser: await import("jsonc-eslint-parser"),
     },
   },
   {
-    ignores: ['**/out-tsc'],
+    ignores: ["**/out-tsc"],
   },
   {
-    files: ['**/*.ts', '**/*.js'],
+    files: ["**/*.ts", "**/*.js"],
     // Override or add rules here
     rules: {},
   },

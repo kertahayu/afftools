@@ -5,13 +5,15 @@
     "outDir": "out-tsc/playwright",
     "sourceMap": false,
     "paths": {
-      "@pages/*": ["./src/pages/*"]
+      "@pages/*": ["./src/pages/*"],
+      "@messages/*": ["./src/messages/*"]
     }
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.json",
     "e2e/**/*.ts",
-    "libs/**/*.ts",
+    "libs.ts",
     "playwright.config.ts"
   ],
   "exclude": [

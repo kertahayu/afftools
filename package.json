@@ -1,14 +1,17 @@
 {
   "name": "@org/source",
   "version": "0.0.0",
-  "license": "MIT",
-  "scripts": {
-    "robot:test": "nx watch --projects=robot -- playwright test --only-changed --headed",
-    "robot": "playwright test",
-    "robot:watch": "PWTEST_WATCH=1 playwright test",
-    "robot:new": "playwright test --only-changed=main --headed"
-  },
   "private": true,
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "playwright test"
+  },
+  "dependencies": {
+    "numbro": "^2.5.0"
+  },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@nx/eslint": "22.4.5",
@@ -31,11 +34,5 @@
     "tslib": "^2.3.0",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.40.0"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {
-    "numbro": "^2.5.0"
   }
 }
