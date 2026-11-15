@@ -10,41 +10,59 @@ export class FacebookProfilePage extends Base {
     return this.page.locator("xpath=//div[@role='main']");
   }
 
-  protected section(value: SectionOptions) {
-    const options = {
-      banner: 0,
-      // undefined: 1,
-      navigation: 2,
-      content: 3,
-    }[value];
+  protected section(value?: SectionOptions) {
+    // const options = {
+    //   banner: 0,
+    //   // undefined: 1,
+    //   navigation: 2,
+    //   content: 3,
+    // }[value];
 
-    this.current = this.root.locator(`xpath=./div`).nth(options);
+    // this.current = this.root.locator(`xpath=./div`).nth(options);
+    this.current = this.root.locator(`xpath=./div`);
 
     return {
+      banner: this.banner.bind(this),
       content: this.content.bind(this),
       remove: this.remove.bind(this),
     } as const;
   }
 
-  private content(value: ContentOptions) {
-    const option = {
-      aside: 0,
-      main: 1,
-    }[value];
-
-    this.current = this.current
-      .locator("xpath=./div")
-      .last()
-      .locator("xpath=./div/div")
-      .nth(option);
+  private banner() {
+    this.current = this.current.nth(0);
 
     return {
+      remove: this.remove.bind(this),
+    };
+  }
+
+  private content(value?: ContentOptions) {
+    // const option = {
+    //   aside: 0,
+    //   main: 1,
+    // }[value];
+
+    this.current = this.current
+      .nth(1)
+      .locator("xpath=./div/div")
+      .last()
+      .locator("xpath=./div/div");
+
+    return {
+      aside: this.aside.bind(this),
       main: this.main.bind(this),
       remove: this.remove.bind(this),
     } as const;
   }
 
-  private main(value: MainOptions) {
+  private aside() {
+    this.current = this.current.nth(0);
+    return {
+      remove: this.remove.bind(this),
+    };
+  }
+
+  private main(value?: MainOptions) {
     const option = {
       filter: 0,
       posts: 1,
@@ -54,6 +72,7 @@ export class FacebookProfilePage extends Base {
 
     return Object.assign(this.current, {
       posts: this.posts.bind(this),
+      remove: this.remove.bind(this),
     });
   }
 

@@ -4,13 +4,11 @@ type TargetOptions = "photo" | "reel";
 
 export class FacebookProfile extends FacebookProfilePage {
   async removeBanner() {
-    await this.section("banner").remove();
-    // this.section("banner")
-    // await this.current.evaluate((node) => node. , arg)
+    await this.section().banner().remove();
   }
 
   async removeAside() {
-    await this.section("content").content("aside").remove();
+    await this.section().content().aside().remove();
   }
 
   /**
