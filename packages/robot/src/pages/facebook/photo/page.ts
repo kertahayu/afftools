@@ -15,13 +15,14 @@ export abstract class FacebookPhotoPage extends Base {
     );
   }
 
-  protected section(value: SectionOptions) {
+  protected section(value?: SectionOptions) {
     const options = {
       main: 0,
       complementary: 1,
     }[value];
 
-    this.current = this.root.locator(`xpath=./div`).nth(options);
+    this.current = this.root.locator(`xpath=./div`);
+    // .nth(options);
 
     return {
       complementary: this.complementary.bind(this),
@@ -29,16 +30,15 @@ export abstract class FacebookPhotoPage extends Base {
     } as const;
   }
 
-  private complementary(value: ComplementaryOptions) {
+  private complementary(value?: ComplementaryOptions) {
     const option = {
       post: 0,
       interaction: 1,
       comments: 2,
     }[value];
 
-    this.current = this.current
-      .locator("xpath=./div/div/div/div/div")
-      .nth(option);
+    this.current = this.current.nth(1).locator("xpath=./div/div/div/div/div");
+    // .nth(option);
     return {
       comments: this.comments.bind(this),
       remove: this.remove.bind(this),
@@ -46,12 +46,14 @@ export abstract class FacebookPhotoPage extends Base {
   }
 
   private comments(value?: CommentsOptions | number) {
-    this.current = this.current.locator("xpath=./div/div");
+    this.current = this.current.nth(2);
+    // .locator("xpath=./div/div");
 
-    if (typeof value === "undefined" || typeof value === "number") {
-      this.current = this.current.locator("xpath=../div[@data-virtualized]"); // 9 item
-      if (typeof value === "number") this.current = this.current.nth(value); // 9 item
-    } else {
+    if (typeof value === "number") {
+      this.current = this.current
+        .locator("xpath=./div/div[@data-virtualized]")
+        .nth(value); // 9 item
+    } else if (typeof value === "string") {
       const option = {
         sort: 0,
         // undefined: 1,
@@ -59,7 +61,7 @@ export abstract class FacebookPhotoPage extends Base {
         comment: -1,
       }[value];
 
-      this.current = this.current.locator("xpath=./div").nth(option);
+      this.current = this.current.locator("xpath=./div/div/div").nth(option);
     }
 
     return {

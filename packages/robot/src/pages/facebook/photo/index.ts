@@ -1,4 +1,3 @@
-import { log } from "console";
 import type { MessagePaths } from "../base";
 import { FacebookPhotoPage } from "./page";
 
@@ -16,11 +15,6 @@ export class FacebookPhoto extends FacebookPhotoPage {
    *
    */
   public async setSort(value: SortOptions) {
-    const comments = this.section("complementary").complementary("comments");
-
-    const sort = comments.comments("sort");
-    await this.current.click({ button: "left" });
-
     const sortValue = {
       new: "sorts.new",
       old: "sorts.old",
@@ -28,13 +22,15 @@ export class FacebookPhoto extends FacebookPhotoPage {
       all: "sorts.all",
     }[value] as MessagePaths;
 
+    const sort = this.section().complementary().comments("sort");
+    await this.current.click({ button: "left" });
     sort.sort(sortValue);
     // console.log(await this.current.allTextContents()); // for get the list sorts
 
     await this.current.click({ button: "left" });
 
     // Wait after changes sort
-    this.section("complementary").complementary("comments");
+    this.section().complementary().comments();
     await this.current.waitFor({ state: "visible" });
   }
 
@@ -57,9 +53,7 @@ export class FacebookPhoto extends FacebookPhotoPage {
     // );
 
     while (commentList.size < loop) {
-      const comments = this.section("complementary")
-        .complementary("comments")
-        .comments(postIndex);
+      const comments = this.section().complementary().comments(postIndex);
 
       // comments.comment();
       // commentList.add((await this.current.textContent()) as string); // harusnya hanya ambil content saja tidak perlu semua
