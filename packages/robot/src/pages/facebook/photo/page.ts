@@ -1,118 +1,183 @@
 import { Base, MessagePaths } from "../base";
 
-type SectionOptions = "main" | "complementary";
-type ComplementaryOptions = "post" | "interaction" | "comments";
-type CommentsOptions = "sort" | "comment";
-type CommentOptions = "time" | "like" | "reply" | "share";
-
-// type PostOptions = "owner" | "content" | "interaction";
-// type MainOptions = "filter" | "posts";
-
 export abstract class FacebookPhotoPage extends Base {
-  private get root() {
+  private root() {
     return this.page.locator(
       "xpath=//div[@role='main' or @role='complementary']/.."
     );
   }
 
-  protected section(value?: SectionOptions) {
-    const options = {
-      main: 0,
-      complementary: 1,
-    }[value];
-
-    this.current = this.root.locator(`xpath=./div`);
-    // .nth(options);
+  protected section() {
+    this.current = this.root().locator(`xpath=./div`);
 
     return {
+      main: this.main.bind(this),
       complementary: this.complementary.bind(this),
       remove: this.remove.bind(this),
-    } as const;
+    };
   }
 
-  private complementary(value?: ComplementaryOptions) {
-    const option = {
-      post: 0,
-      interaction: 1,
-      comments: 2,
-    }[value];
+  private main() {
+    this.current = this.current.nth(0);
 
-    this.current = this.current.nth(1).locator("xpath=./div/div/div/div/div");
-    // .nth(option);
     return {
-      comments: this.comments.bind(this),
       remove: this.remove.bind(this),
-    } as const;
+    };
   }
 
-  private comments(value?: CommentsOptions | number) {
-    this.current = this.current.nth(2);
-    // .locator("xpath=./div/div");
-
-    if (typeof value === "number") {
-      this.current = this.current
-        .locator("xpath=./div/div[@data-virtualized]")
-        .nth(value); // 9 item
-    } else if (typeof value === "string") {
-      const option = {
-        sort: 0,
-        // undefined: 1,
-        more: -2,
-        comment: -1,
-      }[value];
-
-      this.current = this.current.locator("xpath=./div/div/div").nth(option);
-    }
+  private complementary() {
+    this.current = this.current.nth(1).locator("xpath=./div/div/div/div/div");
 
     return {
-      sort: this.sort.bind(this),
-      comment: this.comment.bind(this),
-    } as const;
+      // caption: this.caption.bind(this),
+      interaction: this.complementaryInteraction.bind(this),
+      comments: this.complementaryComments.bind(this),
+      remove: this.remove.bind(this),
+    };
   }
 
-  private comment(option: CommentOptions) {
-    const options = {
-      time: 0,
-      like: 1,
-      reply: 2,
-      share: 3,
-    }[option];
+  private complementaryInteraction() {
+    this.current = this.current.nth(1);
 
-    this.current = this.current
-      .locator("xpath=.//div[@role='article']")
-      .locator("xpath=./div")
-      .last()
-      .locator("xpath=./div")
-      .last()
-      .locator("xpath=./ul")
-      .locator("xpath=./li")
-      .nth(options);
+    return {
+      count: this.complementaryInteractionCommentscount.bind(this),
+    };
   }
 
-  // private more() {
-  //   this.current = this.current.locator(selectorOrLocator);
-  // }
+  private complementaryInteractionCommentscount() {
+    this.current = this.current.locator("xpath=./div/div/div/div");
 
-  /**
-   * BUG: Via nth selector
-   */
-  // private sort(value: SortOptions) {
-  //   const option = {
-  //     relevant: 0,
-  //     newest: 1,
-  //     all: 2,
-  //   }[value];
-  //
-  //   this.current = this.page
-  //     .locator("xpath=//div[@role='menuitem']")
-  //     .nth(option);
-  // }
+    return {
+      like: this.complementaryInteractionLikePice.bind(this),
+      comment: this.complementaryInteractionCommentPice.bind(this), // ini salah sepertinya
+      share: this.complementaryInteractionSharePice.bind(this),
+      who: this.complementaryInteractionWhoPice.bind(this),
+    };
+  }
 
-  private sort(value?: MessagePaths) {
-    this.current = this.page.locator("xpath=//div[@role='menuitem']");
+  private complementaryInteractionLikePice() {
+    this.current = this.current.nth(0);
+  }
+
+  private complementaryInteractionCommentPice() {
+    this.current = this.current.nth(1);
+  }
+
+  private complementaryInteractionSharePice() {
+    this.current = this.current.nth(2);
+  }
+
+  private complementaryInteractionWhoPice() {
+    this.current = this.current.nth(2);
+  }
+
+  private complementaryComments() {
+    this.current = this.current.nth(2);
+
+    return {
+      sort: this.complementaryCommentsSort.bind(this),
+      comment: this.complementaryCommentsComment.bind(this),
+      loadmore: this.complementaryCommentsLoadmore.bind(this),
+    };
+  }
+
+  private complementaryCommentsSort(value?: MessagePaths) {
+    this.current = this.current.locator("xpath=./div/div/div").nth(0);
 
     if (value !== undefined) {
+      this.current = this.page.locator("xpath=//div[@role='menuitem']");
       this.current = this.current.getByText(this.intl(value), { exact: true });
     }
+  }
+
+  private complementaryCommentsComment(index: number) {
+    this.current = this.current.locator("xpath=./div/div").nth(1 + index);
+
+    return {
+      article: this.complementaryCommentsCommentArticle.bind(this),
+    };
+  }
+
+  private complementaryCommentsLoadmore() {
+    this.current = this.current
+      .locator("xpath=./div/div")
+      .nth(-2)
+      .locator("xpath=./div")
+      .first();
+  }
+
+  private complementaryCommentsCommentArticle() {
+    this.current = this.current.locator("xpath=.//div[@role='article']");
+
+    return {
+      // profile:
+      message: this.complementaryCommentsCommentArticleMessage.bind(this),
+    };
+  }
+
+  private complementaryCommentsCommentArticleMessage() {
+    this.current = this.current.locator("xpath=./div").last();
+
+    return {
+      text: this.complementaryCommentsCommentArticleMessageText.bind(this),
+      action: this.complementaryCommentsCommentArticelMessageAction.bind(this),
+    };
+  }
+
+  private complementaryCommentsCommentArticleMessageText() {
+    this.current = this.current.locator("xpath=./div").first();
+
+    this.current = this.current
+      .locator("xpath=./div")
+      .first()
+      .locator("xpath=./div/div")
+      .first()
+      .locator("xpath=./div")
+      .first();
+
+    return {
+      name: this.complementaryCommentsCommentArticleMessageTextName.bind(this),
+      time: this.complementaryCommentsCommentArticleMessageTextTime.bind(this),
+    };
+  }
+
+  private complementaryCommentsCommentArticleMessageTextName() {
+    this.current = this.current.locator("xpath=./div").first();
+  }
+
+  private complementaryCommentsCommentArticleMessageTextTime() {
+    this.current = this.current
+      .locator("xpath=./div")
+      .last()
+      .locator("xpath=./div/div")
+      .last();
+  }
+
+  private complementaryCommentsCommentArticelMessageAction() {
+    this.current = this.current.locator("xpath=./div").last();
+
+    return {
+      like: this.complementaryCommentsCommentArticleMessageActionLike.bind(
+        this
+      ),
+      reply:
+        this.complementaryCommentsCommentArticleMessageActionComment.bind(this),
+      share:
+        this.complementaryCommentsCommentArticleMessageActionShare.bind(this),
+    };
+  }
+
+  private complementaryCommentsCommentArticleMessageActionLike() {
+    this.current = this.current.locator("xpath=./div/div").nth(0);
+  }
+
+  private complementaryCommentsCommentArticleMessageActionComment() {
+    this.current = this.current
+      .locator("xpath=.//li[@role='presentation']")
+      .first();
+  }
+
+  private complementaryCommentsCommentArticleMessageActionShare() {
+    this.current = this.current.locator("xpath=./div/div").nth(2);
   }
 }
