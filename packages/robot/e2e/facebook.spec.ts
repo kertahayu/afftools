@@ -174,7 +174,10 @@ test.describe("Facebook", () => {
     // });
 
     await test.step("Check the post is trend via comment per minutes", async () => {
-      const trend = await facebook.isTrending({ cpm: 1, countComment: 100 });
+      const trend = await facebook.isTrending({
+        commentPerMinute: 1,
+        countComment: 100,
+      });
       console.log(trend);
     });
   });
