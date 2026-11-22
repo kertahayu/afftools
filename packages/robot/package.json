@@ -15,8 +15,9 @@
     }
   },
   "dependencies": {
-    "tslib": "^2.3.0",
+    "@nx/playwright": "^22.4.5",
     "@playwright/test": "^1.36.0",
-    "@nx/playwright": "^22.4.5"
+    "parse-duration": "^2.1.11",
+    "tslib": "^2.3.0"
   }
 }
